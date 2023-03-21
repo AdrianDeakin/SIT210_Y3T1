@@ -1,0 +1,19 @@
+#SIT210-Task3.1P-WebHook
+
+#include <DHT.h>
+
+#define DHTPIN D2
+#define DHTTYPE DHT11
+
+DHT dht(DHTPIN, DHTTYPE);
+
+void setup() {
+  dht.begin();
+}
+
+void loop() {
+  float temp = dht.getTempCelcius();
+  String temp = String(temp);
+  Particle.publish("temp", temp, PRIVATE);
+  delay(30000);
+}
