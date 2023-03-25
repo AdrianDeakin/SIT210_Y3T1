@@ -1,0 +1,36 @@
+#SIT210-Task3.2C-ParticleIFTTT 
+
+#include <HttpClient.h> // include the HttpClient library for making HTTP requests
+
+int sunriseHour; // declare variable to store the hour of sunrise
+int sunriseMinute; // declare variable to store the minute of sunrise
+int sunsetHour; // declare variable to store the hour of sunset
+int sunsetMinute; // declare variable to store the minute of sunset
+
+void setup() {
+  Serial.begin(9600); // initialize serial communication
+
+  // get sunrise and sunset times from an API
+  HttpClient sunriseClient; // create an instance of the HttpClient object
+  sunriseClient.get("http://api.sunrise-sunset.org/json?lat=-37.819967&lng=145.142218&formatted=0"); // make GET request to the API
+  sunriseHour = sunriseClient.responseBody.substring(36, 38).toInt(); // extract sunrise hour from response body and convert to integer
+  sunriseMinute = sunriseClient.responseBody.substring(39, 41).toInt(); // extract sunrise minute from response body and convert to integer
+  HttpClient sunsetClient; // create an instance of the HttpClient object
+  sunsetClient.get("http://api.sunrise-sunset.org/json?lat=-37.819967&lng=145.142218&formatted=0"); // make another GET request to the API
+  sunsetHour = sunsetClient.responseBody.substring(61, 63).toInt(); // extract sunset hour from response body and convert to integer
+  sunsetMinute = sunsetClient.responseBody.substring(64, 66).toInt(); // extract sunset minute from response body and convert to integer
+}
+
+void loop() {
+  int currentTimeHour = Time.hour(); // get the current hour from the Particle device
+  int currentTimeMinute = Time.minute(); // get the current minute from the Particle device
+
+  if (currentTimeHour == sunriseHour && currentTimeMinute == sunriseMinute) {
+    Particle.publish("boxhill_sunlight", "1", PRIVATE); // publish a message indicating that sunrise has occurred
+  }
+  else if (currentTimeHour == sunsetHour && currentTimeMinute == sunsetMinute) {
+    Particle.publish("boxhill_sunlight", "0", PRIVATE); // publish a message indicating that sunset has occurred
+  }
+
+  delay(7200000); // wait for 2 hours before checking again
+}
