@@ -1,0 +1,75 @@
+##SIT210-Task5.2C-RPiGUI
+
+##This code uses the RPi.GPIO library to control the GPIO pins for the LEDs, and the tkinter library to create the GUI.
+##The turn_off_all() function is used to turn off all the LEDs, and the turn_on_red(), turn_on_green(),
+##and turn_on_blue() functions are used to turn on the corresponding LED and turn off the others.
+##The radio_var variable is used to keep track of which radio button is selected,
+##and the command parameter is used to call the corresponding function when a radio button is clicked.
+##The exit_button is used to exit the GUI, and the GPIO.cleanup() function is called to clean up the GPIO pins when the program exits.
+
+##Components Needed:
+##Raspberry Pi
+##3 LEDs (red, green, and blue)
+##3 220 ohm resistors
+##Breadboard
+##Jumper wires
+
+import RPi.GPIO as GPIO
+import tkinter as tk
+
+# Set up the GPIO pins for the LEDs
+red_pin = 18
+green_pin = 23
+blue_pin = 24
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(red_pin, GPIO.OUT)
+GPIO.setup(green_pin, GPIO.OUT)
+GPIO.setup(blue_pin, GPIO.OUT)
+
+# Define a function to turn off all the LEDs
+def turn_off_all():
+    GPIO.output(red_pin, GPIO.LOW)
+    GPIO.output(green_pin, GPIO.LOW)
+    GPIO.output(blue_pin, GPIO.LOW)
+
+# Define a function to turn on the red LED and turn off the others
+def turn_on_red():
+    turn_off_all()
+    GPIO.output(red_pin, GPIO.HIGH)
+
+# Define a function to turn on the green LED and turn off the others
+def turn_on_green():
+    turn_off_all()
+    GPIO.output(green_pin, GPIO.HIGH)
+
+# Define a function to turn on the blue LED and turn off the others
+def turn_on_blue():
+    turn_off_all()
+    GPIO.output(blue_pin, GPIO.HIGH)
+
+# Set up the GUI
+root = tk.Tk()
+root.title("LED Control")
+
+# Define the radio buttons
+radio_var = tk.IntVar()
+radio_var.set(0)
+
+red_radio = tk.Radiobutton(root, text="Red", variable=radio_var, value=1, command=turn_on_red)
+red_radio.pack()
+
+green_radio = tk.Radiobutton(root, text="Green", variable=radio_var, value=2, command=turn_on_green)
+green_radio.pack()
+
+blue_radio = tk.Radiobutton(root, text="Blue", variable=radio_var, value=3, command=turn_on_blue)
+blue_radio.pack()
+
+# Define the exit button
+exit_button = tk.Button(root, text="Exit", command=root.quit)
+exit_button.pack()
+
+# Start the GUI
+root.mainloop()
+
+# Clean up the GPIO pins when the program exits
+GPIO.cleanup()
